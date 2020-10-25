@@ -7,8 +7,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.mvisample.R
 import com.example.mvisample.model.BlogPost
+import com.example.mvisample.model.User
 import com.example.mvisample.presentation.adapter.BlogListAdapter
 import com.example.mvisample.presentation.state.MainStateEvent.GetBlogPostsEvent
 import com.example.mvisample.presentation.state.MainStateEvent.GetUserEvent
@@ -43,7 +45,7 @@ class MainFragment : Fragment(), BlogListAdapter.Interaction {
         initRecyclerView()
     }
 
-    private fun initRecyclerView(){
+    private fun initRecyclerView() {
         recycler_view.apply {
             layoutManager = LinearLayoutManager(activity)
             val itemDecoration = TopSpacingItemDecoration(30)
@@ -76,10 +78,10 @@ class MainFragment : Fragment(), BlogListAdapter.Interaction {
 
             viewState.user?.let {
                 println("DEBUG: Setting user data to Recyclerview: $it")
+                setUserProperties(it)
             }
         })
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -93,6 +95,16 @@ class MainFragment : Fragment(), BlogListAdapter.Interaction {
             R.id.action_get_blogs -> triggerGetBlogEvent()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setUserProperties(user: User) {
+        email.text = user.email
+        username.text = user.username
+        view?.let {
+            Glide.with(it.context)
+                .load(user.image)
+                .into(image)
+        }
     }
 
     private fun triggerGetBlogEvent() {
