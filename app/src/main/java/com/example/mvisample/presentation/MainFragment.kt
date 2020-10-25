@@ -1,5 +1,6 @@
 package com.example.mvisample.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -12,6 +13,8 @@ import com.example.mvisample.presentation.state.MainStateEvent.GetUserEvent
 class MainFragment : Fragment() {
 
     lateinit var viewModel: MainViewModel
+
+    lateinit var dataStateListener: DataStateListener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,17 +39,12 @@ class MainFragment : Fragment() {
         viewModel.dataState.observe(viewLifecycleOwner, { dataState ->
 
             println("DEBUG: DataState: $dataState")
+            //loading and massages will be handles in the Main Activity
+            dataStateListener.onDataStateChange(dataState)
+
             dataState.data?.let { mainViewState ->
                 mainViewState.blogPosts?.let { viewModel.setBlogListData(it) }
                 mainViewState.user?.let { viewModel.setUserData(it) }
-            }
-
-            dataState.message?.let {
-
-            }
-
-            dataState.loading.let {
-
             }
         })
 
@@ -82,5 +80,14 @@ class MainFragment : Fragment() {
 
     private fun triggerGetUserEvent() {
         viewModel.setStateEvent(GetUserEvent("1"))
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try {
+            dataStateListener = context as DataStateListener
+        } catch (e: ClassCastException) {
+            println("DEBUG: $context must implement DataStateListener")
+        }
     }
 }
