@@ -1,0 +1,39 @@
+package com.example.mvisample.presentation
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import com.example.mvisample.presentation.state.MainStateEvent
+import com.example.mvisample.presentation.state.MainStateEvent.*
+import com.example.mvisample.presentation.state.MainViewState
+import com.example.mvisample.util.AbsentLiveData
+
+class MainViewModel : ViewModel() {
+
+    private val _viewState: MutableLiveData<MainViewState> = MutableLiveData()
+    private val _stateEvent: MutableLiveData<MainStateEvent> = MutableLiveData()
+
+    val viewState: LiveData<MainViewState>
+        get() = _viewState
+
+    val dataState: LiveData<MainViewState> = Transformations
+        .switchMap(_stateEvent) { stateEvent ->
+            handleStateEvent(stateEvent)
+        }
+
+    private fun handleStateEvent(stateEvent: MainStateEvent): LiveData<MainViewState> {
+        return when (stateEvent) {
+            is GetBlogPostsEvent -> {
+                AbsentLiveData.create()
+            }
+            is GetUserEvent -> {
+                AbsentLiveData.create()
+            }
+            is Idle -> {
+                AbsentLiveData.create()
+
+            }
+        }
+    }
+}
