@@ -11,6 +11,7 @@ import com.example.mvisample.presentation.state.MainStateEvent
 import com.example.mvisample.presentation.state.MainStateEvent.*
 import com.example.mvisample.presentation.state.MainViewState
 import com.example.mvisample.util.AbsentLiveData
+import com.example.mvisample.util.DataState
 
 class MainViewModel : ViewModel() {
 
@@ -20,12 +21,12 @@ class MainViewModel : ViewModel() {
     val viewState: LiveData<MainViewState>
         get() = _viewState
 
-    val dataState: LiveData<MainViewState> = Transformations
+    val dataState: LiveData<DataState<MainViewState>> = Transformations
         .switchMap(_stateEvent) { stateEvent ->
             handleStateEvent(stateEvent)
         }
 
-    private fun handleStateEvent(stateEvent: MainStateEvent): LiveData<MainViewState> {
+    private fun handleStateEvent(stateEvent: MainStateEvent): LiveData<DataState<MainViewState>> {
         return when (stateEvent) {
             is GetBlogPostsEvent -> {
                 Repository.fetchBlogPosts()

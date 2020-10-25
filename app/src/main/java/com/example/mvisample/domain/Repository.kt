@@ -7,45 +7,46 @@ import com.example.mvisample.presentation.state.MainViewState
 import com.example.mvisample.util.ApiEmptyResponse
 import com.example.mvisample.util.ApiErrorResponse
 import com.example.mvisample.util.ApiSuccessResponse
+import com.example.mvisample.util.DataState
 
 object Repository {
 
-    fun fetchBlogPosts() =
+    fun fetchBlogPosts(): LiveData<DataState<MainViewState>> =
         Transformations
             .switchMap(RetrofitBuilder.apiService.fetchBlogPosts()) { apiResponse ->
-                object : LiveData<MainViewState>() {
+                object : LiveData<DataState<MainViewState>>() {
                     override fun onActive() {
                         super.onActive()
                         value = when (apiResponse) {
                             is ApiSuccessResponse -> {
-                                MainViewState(blogPosts = apiResponse.body)
+                                DataState.data(data = MainViewState(blogPosts = apiResponse.body))
                             }
                             is ApiErrorResponse -> {
-                                MainViewState()
+                                DataState.error(message = apiResponse.errorMessage)
                             }
                             is ApiEmptyResponse -> {
-                                MainViewState()
+                                DataState.error(message = "HTTP 204 - Returned NOTHING")
                             }
                         }
                     }
                 }
             }
 
-    fun fetchUser(userId: String) =
+    fun fetchUser(userId: String): LiveData<DataState<MainViewState>> =
         Transformations
             .switchMap(RetrofitBuilder.apiService.fetchUser(userId)) { apiResponse ->
-                object : LiveData<MainViewState>() {
+                object : LiveData<DataState<MainViewState>>() {
                     override fun onActive() {
                         super.onActive()
                         value = when (apiResponse) {
                             is ApiSuccessResponse -> {
-                                MainViewState(user = apiResponse.body)
+                                DataState.data(data = MainViewState(user = apiResponse.body))
                             }
                             is ApiErrorResponse -> {
-                                MainViewState()
+                                DataState.error(message = apiResponse.errorMessage)
                             }
                             is ApiEmptyResponse -> {
-                                MainViewState()
+                                DataState.error(message = "HTTP 204 - Returned NOTHING")
                             }
                         }
                     }
