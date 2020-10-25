@@ -32,7 +32,7 @@ class MainFragment : Fragment() {
         subscribeObservers()
     }
 
-    fun subscribeObservers() {
+    private fun subscribeObservers() {
         viewModel.dataState.observe(viewLifecycleOwner, Observer { dataState ->
 
             println("DEBUG: DataState: $dataState")
