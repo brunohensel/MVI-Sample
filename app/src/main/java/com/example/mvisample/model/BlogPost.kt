@@ -1,6 +1,6 @@
 package com.example.mvisample.model
 
-data class BLogPost(
+data class BlogPost(
     val pk: Int,
     val title: String,
     val body: String,
