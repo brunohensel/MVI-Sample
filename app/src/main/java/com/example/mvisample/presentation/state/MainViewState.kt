@@ -4,6 +4,6 @@ import com.example.mvisample.model.BLogPost
 import com.example.mvisample.model.User
 
 data class MainViewState(
-    val blogPosts: List<BLogPost>,
-    val user: User
+    var blogPosts: List<BLogPost>? = null,
+    var user: User? = null
 )
